@@ -7,8 +7,8 @@ import { Component } from '@angular/core';
 })
 
 export class SimpsonComponent {
-  calculate = new Calculate();
-  calcularArea(
+  calculator = new Calculator();
+  calculateArea(
     fx: any,
     x0: number,
     x1: number,
@@ -21,52 +21,53 @@ export class SimpsonComponent {
       x1 = temp;
     }
 
-    return this.calcular(fx, x0, x1, seg, error);
+
+    return this.calculate(fx, x0, x1, seg, error);
   }
-  calcular(fx: any, x0: number, x1: number, seg: number, error: number) {
+  calculate(fx: any, x0: number, x1: number, seg: number, error: number) {
     if (fx[0] == 0 || x1 == 0) {
       return 0;
     } else {
-      let area1 = 0;
-      let area2 = 0;
-      let contador = 1;
-      while (area1 == 0 || area2 - area1 > error || area2 == 0) {
-        if (contador == 1) {
-          area1 = this.simpson(seg, fx, x0, x1);
+      let currentArea = 0;
+      let previousArea = 0;
+      let counter = 1;
+      while (currentArea == 0 || currentArea - previousArea > error || currentArea == 0) {
+        if (counter == 1) {
+          currentArea = this.simpson(seg, fx, x0, x1);
         } else {
-          if (area2 != 0) {
-            area1 = area2;
+          if (currentArea != 0) {
+            previousArea = currentArea;
           }
           seg *= 2;
-          area2 = this.simpson(seg, fx, x0, x1);
+          currentArea = this.simpson(seg, fx, x0, x1);
         }
-  contador += 1;
+        counter += 1;
       }
-      return area2;
+      return currentArea;
     }
   }
 
-  simpson(segmentos: any, fx: any, x0: any, x1: any) {
-    let w = (x1 - x0) / segmentos;
-    let multiplo = 0;
-    var cal = this.calculate.calcularOperacion(fx, x0);
-    let suma = x0 == 0 ? 0 : (cal *= cal < 0 ? -1 : 1);
-    for (let i = 1; i <= segmentos; i++) {
-      if (i == segmentos) {
-        suma += this.calculate.calcularOperacion(fx, x1);
+  simpson(segments: any, fx: any, x0: any, x1: any) {
+    let w = (x1 - x0) / segments;
+    let multiple = 0;
+    var cal = this.calculator.calculateOperation(fx, x0);
+    let sum = x0 == 0 ? 0 : (cal *= cal < 0 ? -1 : 1);
+    for (let i = 1; i <= segments; i++) {
+      if (i == segments) {
+        sum += this.calculator.calculateOperation(fx, x1);
       } else {
         if (i % 2 != 0) {
-          multiplo = 4;
+          multiple = 4;
         } else {
-          multiplo = 2;
+          multiple = 2;
         }
-        cal = this.calculate.calcularOperacion(fx, w * i + x0);
+        cal = this.calculator.calculateOperation(fx, w * i + x0);
         if (cal < 0) {
           cal *= -1;
         }
-        suma += multiplo * cal;
+        sum += multiple * cal;
       }
     }
-    return (w / 3) * suma;
+    return (w / 3) * sum;
   }
 }
