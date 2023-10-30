@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Calculator } from './calculator';
 
 @Component({
   selector: 'app-simpson',
@@ -7,7 +8,7 @@ import { Component } from '@angular/core';
 })
 
 export class SimpsonComponent {
-  calculator = new calculator();
+  calculator = new Calculator();
   calculateArea(
     fx: any,
     x0: number,
