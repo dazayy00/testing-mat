@@ -1,82 +1,44 @@
-import { evaluate } from 'mathjs';
+function calculateIntegral(x0: number, x1: number, num_seg: number, ERROR: number, f: (x: number) => number): number {
+  let h = (x1 - x0) / num_seg;
+  let integral = (f(x0) + f(x1)) / 2;
 
-export class Calculate {
-  sumX(lista: number[]): number {
-    var sum = 0;
-    console.log(lista);
-    for (let i = 0; i < lista.length; i++) {
-      sum += lista[i];
+  for (let i = 1; i < num_seg; i++) {
+    integral += f(x0 + i * h);
+  }
+
+  integral *= h;
+
+  let prevIntegral = 0;
+  let numIterations = 0;
+
+  while (Math.abs(integral - prevIntegral) > ERROR) {
+    numIterations++;
+    prevIntegral = integral;
+
+    h /= 2;
+    integral = (f(x0) + f(x1)) / 2;
+
+    for (let i = 1; i < num_seg * 2; i++) {
+      integral += f(x0 + i * h);
     }
 
-    return sum;
+    integral *= h;
   }
 
-  sumXX(lista: number[]): number {
-    var sum = 0;
+  console.log(`Iterations: ${numIterations}`);
 
-    for (let i = 0; i < lista.length; i++) {
-      sum += lista[i] * lista[i];
-    }
-
-    return sum;
-  }
-
-  sumXY(listaX: number[], listaY: number[]): number {
-    var sum = 0;
-
-    for (let i = 0; i < listaX.length; i++) {
-      sum += listaX[i] * listaY[i];
-    }
-
-    return sum;
-  }
-
-  calculateB1(
-    sumXY: number,
-    sumX: number,
-    sumY: number,
-    sumXX: number,
-    n: number
-  ): number {
-    var b1 = 0;
-
-    b1 = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-
-    return b1;
-  }
-
-  calculateB0(sumX: number, sumY: number, b1: number, n: number): number {
-    var b0 = 0;
-
-    b0 = (sumY - b1 * sumX) / n;
-
-    return b0;
-  }
-
-  calculateY(b0: number, b1: number, x: number): number {
-    var y = 0;
-
-    y = b0 + b1 * x;
-
-    return y;
-  }
-
-  calculateMedia(lista: number[]): number {
-    var media = 0;
-    var sum = this.sumX(lista);
-
-    media = sum / lista.length;
-
-    return media;
-  }
-
-  calcularOperacion(operacion:string, x:number){
-    try{
-        const scope={x: x, X:x};
-        const resultado = evaluate(operacion, scope);
-        return resultado;
-    }catch(error){
-        throw error;
-    }
+  return integral;
 }
-}
+
+// Ejemplo 1
+const result1 = calculateIntegral(0, 4, 4, 0.0001, (x) => 2 * x);
+console.log(`Result 1: ${result1}`);
+
+// Ejemplo 2
+const result2 = calculateIntegral(0, 1, 4, 0.0001, (x) => x ** 2);
+console.log(`Result 2: ${result2}`);
+
+// Ejemplo 3
+const result3 = calculateIntegral(1, 4, 6, 0.001, (x) => 1 / x);
+console.log(`Result 3: ${result3}`);
+
