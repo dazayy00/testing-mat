@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 
 export class SimpsonComponent {
-  calculator = new Calculator();
+  calculator = new calculator();
   calculateArea(
     fx: any,
     x0: number,
